@@ -59,21 +59,22 @@ public class SecurityConfig {
     // CORS 추가 이후
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf((csrf) -> csrf.disable()).cors(withDefaults())
-                .authorizeHttpRequests((authorizeHttpRequests) ->
-                        authorizeHttpRequests.anyRequest().permitAll());
+        // 로그인 보호 제외
+//        http.csrf((csrf) -> csrf.disable()).cors(withDefaults())
+//                .authorizeHttpRequests((authorizeHttpRequests) ->
+//                        authorizeHttpRequests.anyRequest().permitAll());
 
-
-//        http.csrf((csrf) -> csrf.disable())
-//                .cors(withDefaults())
-//                .sessionManagement((sessionManagement) ->
-//                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .authorizeHttpRequests((authorizeRequests) ->
-//                        authorizeRequests.requestMatchers(HttpMethod.POST, "/login")
-//                                .permitAll().anyRequest().authenticated())
-//                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
-//                .exceptionHandling((exceptionHandling) ->
-//                        exceptionHandling.authenticationEntryPoint(exceptionHandler));
+        // 로그인 활성화
+        http.csrf((csrf) -> csrf.disable())
+                .cors(withDefaults())
+                .sessionManagement((sessionManagement) ->
+                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests((authorizeRequests) ->
+                        authorizeRequests.requestMatchers(HttpMethod.POST, "/login")
+                                .permitAll().anyRequest().authenticated())
+                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling((exceptionHandling) ->
+                        exceptionHandling.authenticationEntryPoint(exceptionHandler));
 
         return http.build();
     }
